@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "909246102155",
+    "firebase_url": "https://mask-detector-3302b.firebaseio.com",
+    "project_id": "mask-detector-3302b",
+    "storage_bucket": "mask-detector-3302b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909246102155:android:a646ec8fab560caa62f28e",
+        "android_client_info": {
+          "package_name": "com.aniket.maskdetector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "909246102155-mtr94hfnstmf4i6stm6vdqa6520tlk9n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd47FhnFDUhNk-6qYpudKOSz5dWD3IpIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "909246102155-mtr94hfnstmf4i6stm6vdqa6520tlk9n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
