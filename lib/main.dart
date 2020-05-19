@@ -133,7 +133,15 @@ classifyImage(File image) async {
                           Text("${(_outputs[0]["confidence"]*100).round()}%",style: TextStyle(color:Colors.purpleAccent,fontSize:20),)
                         ],
                       )
-                      : Text("Classification Failed",)
+                      : Container(
+                          child:SvgPicture.asset(
+                            'assets/mask-woman.svg',
+                            semanticsLabel: 'Mask woman',
+                            color: Colors.redAccent,
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height*0.8,
+                        )
+                      )
                 ],
               ),
             )
