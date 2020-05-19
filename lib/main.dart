@@ -127,7 +127,7 @@ classifyImage(File image) async {
                title: Text('Try Randomize',style: TextStyle(fontSize:20,color: Colors.white),),
                leading: Icon(Icons.play_arrow,size: 40,color: Colors.redAccent,),
                onTap: () {
-                  launch('https://github.com/AniketSindhu');
+                  launch('https://play.google.com/store/apps/details?id=com.aniket.randomize');
                },
               )
             ],
@@ -166,7 +166,7 @@ classifyImage(File image) async {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _image == null ? Container() : Image.file(_image,fit: BoxFit.contain,height:MediaQuery.of(context).size.height*0.5),
+                  _image == null ? Container() : Image.file(_image,fit: BoxFit.contain,height:MediaQuery.of(context).size.height*0.8),
                   SizedBox(
                     height: 10,
                   ),
