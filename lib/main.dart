@@ -134,13 +134,26 @@ classifyImage(File image) async {
                         ],
                       )
                       : Container(
-                          child:SvgPicture.asset(
-                            'assets/mask-woman.svg',
-                            semanticsLabel: 'Mask woman',
-                            color: Colors.redAccent,
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height*0.8,
-                        )
+                        child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text("Add a photo and check if there is any mask in it or not",style: TextStyle(fontSize:20,fontWeight:FontWeight.w500,color: Colors.white),textAlign: TextAlign.center,),
+                            ),
+                            Container(
+                                child:SvgPicture.asset(
+                                  'assets/mask-woman.svg',
+                                  semanticsLabel: 'Mask woman',
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height*0.5,
+                                )
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text("Note:The result may not be 100% correct",style:TextStyle(color: Colors.red,fontSize: 20)),
+                            )
+                          ],
+                        ),
                       )
                 ],
               ),
