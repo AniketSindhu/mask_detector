@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:flutter_share/flutter_share.dart';
+import 'package:url_launcher/url_launcher.dart';
 void main() {
   runApp(MyApp());
 }
@@ -41,14 +42,22 @@ void initState() {
       });
     });
 }
+Future<void> share() async {
+  await FlutterShare.share(
+    title: 'Hey,I found out a great app!',
+    text: 'use this app to detect mask in photos/selfies. This app is really awesome. Must download app',
+    linkUrl: 'https://play.google.com/store/apps/details?id=com.aniket.maskdetector',
+    chooserTitle: 'Hey,I found out a great app!'
+  );
+}
 loadModel() async {
     await Tflite.loadModel(
       model: "assets/model_unquant.tflite",
       labels: "assets/labels.txt",
     );
 }
-pickImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+pickImage(bool yes) async {
+    var image = await ImagePicker.pickImage(source: yes?ImageSource.gallery:ImageSource.camera);
     if (image == null) return null;
     setState(() {
       _loading = true;
@@ -76,35 +85,76 @@ classifyImage(File image) async {
     return Scaffold(
       backgroundColor: Colors.grey[900],
       drawer: Drawer(
-       child: ListView(
-          padding: EdgeInsets.only(top:20),
-          children: <Widget>[
-            ListTile(
-              title: Text('Share with your friends',style: TextStyle(fontSize:25),),
-              leading: Icon(Icons.share,size: 40,color: Colors.redAccent,),
-              onTap: () {
-
-              },
-            ),
-            Divider(height:3,color: Colors.black,),
-            ListTile(
-             title: Text('Rate the app',style: TextStyle(fontSize:25),),
-             leading: Icon(Icons.star,size: 40,color: Colors.redAccent,),
-             onTap: () {
-
-             },
-            ),
-          ],
-        ),
+       child: Container(
+         color: Colors.grey[900],
+         child: ListView(
+            padding: EdgeInsets.only(top:20),
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.redAccent,
+                  image: DecorationImage(
+                    image: AssetImage("assets/mask.jpg"),
+                     fit: BoxFit.cover),
+                ),
+                child: Align(alignment:Alignment.bottomLeft,child: Text('Mask detector',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),)),
+              ),
+              ListTile(
+                title: Text('Share with your friends',style: TextStyle(fontSize:20,color: Colors.white),),
+                leading: Icon(Icons.share,size: 40,color: Colors.redAccent,),
+                onTap: () {
+                  share();
+                },
+              ),
+              Divider(height:3,color: Colors.black,),
+              ListTile(
+               title: Text('Rate the app',style: TextStyle(fontSize:20,color: Colors.white),),
+               leading: Icon(Icons.star,size: 40,color: Colors.redAccent,),
+               onTap: () {
+                 launch('https://play.google.com/store/apps/details?id=com.aniket.maskdetector');
+               },
+              ),
+              Divider(height:3,color: Colors.black,),
+              ListTile(
+               title: Text('About the developer',style: TextStyle(fontSize:20,color: Colors.white),),
+               leading: Icon(Icons.developer_mode,size: 40,color: Colors.redAccent,),
+               onTap: () {
+                  launch('https://github.com/AniketSindhu');
+               },
+              ),
+              Divider(height:3,color: Colors.black,),
+              ListTile(
+               title: Text('Try Randomize',style: TextStyle(fontSize:20,color: Colors.white),),
+               leading: Icon(Icons.play_arrow,size: 40,color: Colors.redAccent,),
+               onTap: () {
+                  launch('https://github.com/AniketSindhu');
+               },
+              )
+            ],
+          ),
+       ),
       ),
       appBar: AppBar(
         title:Text("Mask detector"),
         centerTitle: true,
         backgroundColor: Colors.redAccent,),
-        floatingActionButton: FloatingActionButton(
-        onPressed: pickImage,
-        child: Icon(Icons.image),
-      ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            FloatingActionButton(
+              heroTag: null,
+              onPressed:()=> pickImage(true),
+              child: Icon(Icons.image),
+            ),
+            SizedBox(width:10),
+            FloatingActionButton(
+              heroTag: null,
+              onPressed:()=> pickImage(false),
+              child: Icon(Icons.camera),
+            ),
+          ],
+        ),
+      
       body: _loading 
           ? Container(
               alignment: Alignment.center,
@@ -133,12 +183,13 @@ classifyImage(File image) async {
                           Text("${(_outputs[0]["confidence"]*100).round()}%",style: TextStyle(color:Colors.purpleAccent,fontSize:20),)
                         ],
                       )
-                      : Container(
-                        child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      : Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: Text("Add a photo and check if there is any mask in it or not",style: TextStyle(fontSize:20,fontWeight:FontWeight.w500,color: Colors.white),textAlign: TextAlign.center,),
+                              child: Text("Add a photo of a person and check if there is any mask in it or not",style: TextStyle(fontSize:20,fontWeight:FontWeight.w500,color: Colors.white),textAlign: TextAlign.center,),
                             ),
                             Container(
                                 child:SvgPicture.asset(
@@ -148,6 +199,7 @@ classifyImage(File image) async {
                                   height: MediaQuery.of(context).size.height*0.5,
                                 )
                             ),
+                            SizedBox(height:20),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text("Note:The result may not be 100% correct",style:TextStyle(color: Colors.red,fontSize: 20)),
