@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 void main() {
   runApp(MyApp());
 }
@@ -33,14 +34,41 @@ class _MyHomePageState extends State<MyHomePage> {
 bool _loading;
 List _outputs;
 File _image;
+int count=0;
+InterstitialAd interstitialAd;
 void initState() {
     super.initState();
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-8295782880270632~3798840407');
+    interstitialAd = myInterstitial()..load();
     _loading = true;
     loadModel().then((value) {
       setState(() {
         _loading = false;
       });
     });
+}
+static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['apps', 'games', 'news'], // or MobileAdGender.female, MobileAdGender.unknown
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+InterstitialAd myInterstitial() {
+    return InterstitialAd(
+      adUnitId: 'ca-app-pub-8295782880270632/9789533681',
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        if (event == MobileAdEvent.failedToLoad) {
+          interstitialAd..load();
+        } else if (event == MobileAdEvent.closed) {
+          interstitialAd = myInterstitial()..load();
+        }
+      },
+    );
+  }
+@override
+void dispose() {
+    interstitialAd?.dispose();
+    super.dispose();
 }
 Future<void> share() async {
   await FlutterShare.share(
@@ -57,6 +85,8 @@ loadModel() async {
     );
 }
 pickImage(bool yes) async {
+      count++;
+      print(count);
     var image = await ImagePicker.pickImage(source: yes?ImageSource.gallery:ImageSource.camera);
     if (image == null) return null;
     setState(() {
@@ -78,6 +108,13 @@ classifyImage(File image) async {
       _loading = false;
       //Declare List _outputs in the class which will be used to show the classified classs name and confidence
       _outputs = output;
+
+        if(count.isOdd)
+      { print('hey');
+        interstitialAd
+          ..load()
+          ..show();
+      }
     });
   }
   @override
