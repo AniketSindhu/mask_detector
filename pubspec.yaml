@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   tflite: ^1.0.5
   image_picker: ^0.6.6+1
+  flutter_svg: ^0.17.4
 
 
 

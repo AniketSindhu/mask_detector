@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(MyApp());
@@ -75,6 +75,28 @@ classifyImage(File image) async {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
+      drawer: Drawer(
+       child: ListView(
+          padding: EdgeInsets.only(top:20),
+          children: <Widget>[
+            ListTile(
+              title: Text('Share with your friends',style: TextStyle(fontSize:25),),
+              leading: Icon(Icons.share,size: 40,color: Colors.redAccent,),
+              onTap: () {
+
+              },
+            ),
+            Divider(height:3,color: Colors.black,),
+            ListTile(
+             title: Text('Rate the app',style: TextStyle(fontSize:25),),
+             leading: Icon(Icons.star,size: 40,color: Colors.redAccent,),
+             onTap: () {
+
+             },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title:Text("Mask detector"),
         centerTitle: true,
@@ -111,7 +133,7 @@ classifyImage(File image) async {
                           Text("${(_outputs[0]["confidence"]*100).round()}%",style: TextStyle(color:Colors.purpleAccent,fontSize:20),)
                         ],
                       )
-                      : Text("Classification Failed")
+                      : Text("Classification Failed",)
                 ],
               ),
             )
