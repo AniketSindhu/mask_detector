@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mask_detector/face_detection_camera.dart';
 import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -85,10 +86,10 @@ loadModel() async {
       labels: "assets/labels.txt",
     );
 }
-pickImage(bool yes) async {
+pickImage() async {
       count++;
       print(count);
-    var image = await ImagePicker.pickImage(source: yes?ImageSource.gallery:ImageSource.camera);
+    var image = await ImagePicker.pickImage(source:ImageSource.gallery);
     if (image == null) return null;
     setState(() {
       _loading = true;
@@ -181,13 +182,13 @@ classifyImage(File image) async {
           children: <Widget>[
             FloatingActionButton(
               heroTag: null,
-              onPressed:()=> pickImage(true),
+              onPressed:()=> pickImage(),
               child: Icon(Icons.image),
             ),
             SizedBox(width:10),
             FloatingActionButton(
               heroTag: null,
-              onPressed:()=> pickImage(false),
+              onPressed:(){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){return FaceDetectionFromLiveCamera();}));},
               child: Icon(Icons.camera),
             ),
           ],
@@ -212,13 +213,13 @@ classifyImage(File image) async {
                       ? Column(
                         children: <Widget>[
                           Text(
-                              _outputs[0]["label"]=='0 mask'?"Mask detected":"Mask not detected",
+                              _outputs[0]["label"]=='0 with_mask'?"Mask detected":"Mask not detected",
                               style: TextStyle(
-                                color: _outputs[0]["label"]=='0 mask'?Colors.green:Colors.red,
+                                color: _outputs[0]["label"]=='0 with_mask'?Colors.green:Colors.red,
                                 fontSize: 25.0,
                               ),
                             ),
-                          Text("${(_outputs[0]["confidence"]*100).round()}%",style: TextStyle(color:Colors.purpleAccent,fontSize:20),)
+                          Text("${(_outputs[0]["confidence"]*100).toStringAsFixed(0)}%",style: TextStyle(color:Colors.purpleAccent,fontSize:20),)
                         ],
                       )
                       : Expanded(
@@ -240,7 +241,7 @@ classifyImage(File image) async {
                             SizedBox(height:20),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: Text("Note:The result may not be 100% correct",style:TextStyle(color: Colors.red,fontSize: 20)),
+                              child: Text("Note:the Input photo must have a face & the result may not be 100% correct",style:TextStyle(color: Colors.red,fontSize: 20),textAlign: TextAlign.center,),
                             )
                           ],
                         ),
