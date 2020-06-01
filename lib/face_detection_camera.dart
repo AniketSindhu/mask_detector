@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
-
+import 'package:firebase_admob/firebase_admob.dart';
 import './boundary_box.dart';
 
 class FaceDetectionFromLiveCamera extends StatefulWidget {
@@ -20,13 +20,40 @@ class _FaceDetectionFromLiveCameraState
   int _imageHeight = 0;
   int _imageWidth = 0;
   bool front= true;
-
+  InterstitialAd interstitialAd;
   @override
   void initState() {
     super.initState();
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-8295782880270632~3798840407');
+    interstitialAd = myInterstitial()..load()..show();
     loadModel();
     _getAvailableCameras();
   }
+  @override
+  void dispose() {
+    cameraController?.dispose();
+    interstitialAd.dispose();
+    super.dispose();
+  }
+static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['apps', 'games', 'news'], // or MobileAdGender.female, MobileAdGender.unknown
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+InterstitialAd myInterstitial() {
+    return InterstitialAd(
+      adUnitId: 'ca-app-pub-8295782880270632/9789533681',
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        if (event == MobileAdEvent.failedToLoad) {
+          interstitialAd..load();
+        } else if (event == MobileAdEvent.closed) {
+          interstitialAd = myInterstitial()..load();
+        }
+      },
+    );
+  }
+
  Future<void> _getAvailableCameras() async{
    WidgetsFlutterBinding.ensureInitialized();
    _availableCameras = await availableCameras();
@@ -52,17 +79,16 @@ void loadModel() async {
             if (!isDetecting) {
               isDetecting = true;
               Tflite.runModelOnFrame(
-                threshold: 0.5,
-                imageMean: 127.5,
-                imageStd: 127.5,
                 bytesList: img.planes.map(
                   (plane) {
                     return plane.bytes;
                   },
                 ).toList(),
+                threshold: 0.5,
+                rotation: 0,
                 imageHeight: img.height,
                 imageWidth: img.width,
-                numResults: 2,
+                numResults: 1,
               ).then(
                 (recognitions) {
                   setRecognitions(recognitions, img.height, img.width);

@@ -75,7 +75,7 @@ void dispose() {
 Future<void> share() async {
   await FlutterShare.share(
     title: 'Hey,I found out a great app!',
-    text: 'use this app to detect mask in photos/selfies. This app is really awesome. Must download app',
+    text: 'Use this app to detect mask in photos/selfies. This app is really awesome.',
     linkUrl: 'https://play.google.com/store/apps/details?id=com.aniket.maskdetector',
     chooserTitle: 'Hey,I found out a great app!'
   );
@@ -101,7 +101,7 @@ pickImage() async {
 classifyImage(File image) async {
     var output = await Tflite.runModelOnImage(
       path: image.path,
-      numResults: 2,
+      numResults: 1,
       threshold: 0.5,
       imageMean: 127.5,
       imageStd: 127.5,
@@ -161,14 +161,6 @@ classifyImage(File image) async {
                   launch('https://github.com/AniketSindhu');
                },
               ),
-              Divider(height:3,color: Colors.black,),
-              ListTile(
-               title: Text('Try Randomize',style: TextStyle(fontSize:20,color: Colors.white),),
-               leading: Icon(Icons.play_arrow,size: 40,color: Colors.redAccent,),
-               onTap: () {
-                  launch('https://play.google.com/store/apps/details?id=com.aniket.randomize');
-               },
-              )
             ],
           ),
        ),
@@ -228,7 +220,7 @@ classifyImage(File image) async {
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: Text("Add a photo of a person and check if there is any mask in it or not",style: TextStyle(fontSize:20,fontWeight:FontWeight.w500,color: Colors.white),textAlign: TextAlign.center,),
+                              child: Text("Choose a photo from gallery or use the live camera feed to detect face mask",style: TextStyle(fontSize:20,fontWeight:FontWeight.w500,color: Colors.white),textAlign: TextAlign.center,),
                             ),
                             Container(
                                 child:SvgPicture.asset(
@@ -241,7 +233,7 @@ classifyImage(File image) async {
                             SizedBox(height:20),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
-                              child: Text("Note:the Input photo must have a face & the result may not be 100% correct",style:TextStyle(color: Colors.red,fontSize: 20),textAlign: TextAlign.center,),
+                              child: Text("Note:the input photo must have a CLOSE face & the model is not 100% correct",style:TextStyle(color: Colors.red,fontSize: 20),textAlign: TextAlign.center,),
                             )
                           ],
                         ),
